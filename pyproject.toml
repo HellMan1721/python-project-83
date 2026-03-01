@@ -1,0 +1,25 @@
+[project]
+name = "hexlet-code"
+version = "0.0.1"
+dependencies = [
+  "flask",
+  "gunicorn",
+  "python-dotenv",
+  "psycopg2-binary"
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.5.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 88
+target-version = 'py39'
+
+[tool.hatch.build.targets.wheel]
+packages = ["hexlet_code"]
