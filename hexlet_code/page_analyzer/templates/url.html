@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="glass-effect rounded-4 p-5 shadow-lg mx-auto" style="max-width: 600px;" data-test="url">
+    <h1 class="h2 mb-4">{{ url[1] }}</h1>
+    <p><strong>ID:</strong> {{ url[0] }}</p>
+    <p><strong>Дата создания:</strong> {{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <a href="{{ url_for('urls_list') }}" class="btn btn-primary">Назад</a>
+  </div>
+</div>
+{% endblock %}
