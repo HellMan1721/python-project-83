@@ -4,21 +4,24 @@
   <h1 class="h2 mb-4">Список адресов</h1>
   <table class="table table-striped" data-test="urls">
     <thead>
-      <tr>
+    <tr>
         <th>ID</th>
         <th>Адрес</th>
         <th>Дата создания</th>
-      </tr>
+        <th>Последняя проверка</th>
+    </tr>
     </thead>
     <tbody>
-      {% for url in urls %}
-      <tr>
+    {% for url in urls %}
+    <tr>
         <td>{{ url[0] }}</td>
         <td><a href="{{ url_for('url_show', id=url[0]) }}">{{ url[1] }}</a></td>
         <td>{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
-      </tr>
-      {% endfor %}
+        <td>{{ url[7].strftime('%Y-%m-%d %H:%M:%S') if url[7] else '-' }}</td>
+    </tr>
+    {% endfor %}
     </tbody>
+
   </table>
 </div>
 {% endblock %}

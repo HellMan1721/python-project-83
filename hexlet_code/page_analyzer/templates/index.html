@@ -42,36 +42,23 @@
           </div>
           
           <!-- Форма -->
-          <form class="row g-3 justify-content-center">
-            <div class="col-lg-10">
-              <div class="input-group">
-                <span class="input-group-text bg-white border-end-0 px-3">
-                  https://
-                </span>
-                <input 
-                  type="url" 
-                  class="form-control form-control-lg border-start-0 fs-6 px-4 py-2" 
-                  name="url"
-                  value="example.com"
-                  placeholder="example.com"
-                  required
-                >
-                <button class="btn btn-primary btn-lg px-5 py-2" type="submit">
-                  Проверить
-                </button>
-              </div>
-            </div>
-          </form>
-          
-          <div class="text-center mt-4">
-            <small class="text-muted">
-              Пример: hexlet.io
-            </small>
-          </div>
-        </div>
-      </div>
+    <form method="POST" action="/urls">
+    <div class="input-group">
+        <span class="input-group-text bg-white border-end-0 px-3">https://</span>
+        <input 
+        type="text" 
+        class="form-control form-control-lg border-start-0 px-4" 
+        name="url"
+        value="{{ url if url else 'example.com' }}"
+        placeholder="example.com"
+        required
+        >
+        <button class="btn btn-primary btn-lg px-5" type="submit">
+        Проверить
+        </button>
     </div>
-  </div>
+    </form>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
