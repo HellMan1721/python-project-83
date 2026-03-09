@@ -1,60 +1,78 @@
-{% extends 'base.html' %}
-{% block title %}Сайты{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}{{ url[1] }} - Анализатор страницы{% endblock %}
+
 {% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    
     <!-- Информация о сайте -->
-  <div class="container py-4">
-    <div class="row">
-      <div class="col-lg-8" data-test="url">
-        <h1>Сайт: {{ url[1] }}</h1>
-            <table class="table table-striped">
-      <tbody>
-        <tr>
-          <th>ID</th>
-          <th>{{ url[0] }}</th>
-        </tr>
-        <tr>
-          <th>Имя</th>
-          <th>{{ url[1] }}</th>
-        </tr>
-          <th>Дата создания</th>
-          <th>{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</th>
-        </tr>
-      </tbody>
-    </table>
+    <div class="card border-0 shadow mb-5">
+      <div class="card-body p-5">
+        <h1 class="h1 mb-3 font-weight-bold">{{ url[1] }}</h1>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-2">
+              <span class="font-weight-bold">ID:</span> {{ url[0] }}
+            </div>
+          </div>
+          <div class="col-md-6 text-md-right text-muted">
+            Дата создания: {{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-    <!-- КНОПКА ПРОВЕРКИ  -->
-    <form method="post" action="{{ url_for('url_check', id=url[0]) }}">
-      <input type="submit" class="btn btn-primary mb-4" value="Запустить проверку">
+    <!-- Кнопка проверки -->
+    <form method="post" action="{{ url_for('url_check', id=url[0]) }}" class="mb-5">
+      <button type="submit" class="btn btn-primary btn-lg px-5 py-3 font-weight-bold w-100">
+        Запустить проверку
+      </button>
     </form>
 
-    <!-- ТАБЛИЦА ПРОВЕРОК  -->
-    <table class="table table-striped" data-test="checks">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Код ответа</th>
-          <th>h1</th>
-          <th>title</th>
-          <th>description</th>
-          <th>Дата создания</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for check in checks %}
-        <tr>
-          <td>{{ check[0] }}</td>  <!-- id -->
-          <td>{{ check[2] or '-' }}</td>  <!-- status_code -->
-          <td>{{ (check[3][:200] + '...') if check[3] else '-' }}</td>  <!-- h1 -->
-          <td>{{ (check[4][:200] + '...') if check[4] else '-' }}</td>  <!-- title -->
-          <td>{{ (check[5][:200] + '...') if check[5] else '-' }}</td>  <!-- description -->
-          <td>{{ check[6].strftime('%Y-%m-%d %H:%M:%S') }}</td>  <!-- created_at -->
-        </tr>
-        {% else %}
-         <tr><td colspan="6" class="text-center text-muted">Проверок пока нет</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <!-- Таблица проверок -->
+    <div class="table-responsive">
+      <table class="table table-hover" data-test="checks">
+        <thead class="thead-dark">
+          <tr>
+            <th class="py-4 px-4 font-weight-bold">ID</th>
+            <th class="py-4 px-4 font-weight-bold">Код ответа</th>
+            <th class="py-4 px-4 font-weight-bold">h1</th>
+            <th class="py-4 px-4 font-weight-bold">title</th>
+            <th class="py-4 px-4 font-weight-bold">description</th>
+            <th class="py-4 px-4 font-weight-bold">Дата создания</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for check in checks %}
+          <tr>
+            <th class="font-weight-bold px-4 py-4">{{ check[0] }}</th>
+            <td class="px-4 py-4">
+              <span class="badge {{ 'badge-success' if check[2] == 200 else 'badge-warning' }}">
+                {{ check[2] or '-' }}
+              </span>
+            </td>
+            <td class="px-4 py-4" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              {{ (check[3][:50] + '...') if check[3] else '-' }}
+            </td>
+            <td class="px-4 py-4" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              {{ (check[4][:50] + '...') if check[4] else '-' }}
+            </td>
+            <td class="px-4 py-4" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              {{ (check[5][:50] + '...') if check[5] else '-' }}
+            </td>
+            <td class="text-muted px-4 py-4">{{ check[6].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              Проверок пока нет
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 {% endblock %}

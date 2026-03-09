@@ -1,31 +1,81 @@
-{% extends 'base.html' %}
-{% block title %}Сайты{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Сайты - Анализатор страницы{% endblock %}
+
 {% block content %}
-    <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Сайты</h1>
-        <a href="/" class="btn btn-primary">Добавить</a>
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    
+    <!-- Заголовок -->
+    <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom">
+      <h1 class="h2 fw-bold mb-0">Сайты</h1>
     </div>
-    <table class="table table-striped" data-test="urls">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Адрес</th>
-            <th>Дата создания</th>
-            <th>Последняя проверка</th>
-            <th>Код ответа</th>
-        </tr>
+
+    <!-- Форма -->
+    <div class="card border-0 shadow mb-5">
+      <div class="card-body p-5">
+        <form method="post" action="{{ url_for('urls') }}">
+          <div class="row">
+            <div class="col-md-8">
+              <label class="form-label font-weight-bold mb-2">URL</label>
+              <input type="url" name="url" class="form-control form-control-lg" 
+                     placeholder="https://hexlet.io" required>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary btn-lg w-100 py-3 font-weight-bold">
+                Проверить
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Таблица -->
+    <div class="table-responsive">
+      <table class="table table-hover" data-test="urls">
+        <thead class="thead-dark">
+          <tr>
+            <th class="py-4 px-4 font-weight-bold">ID</th>
+            <th class="py-4 px-4 font-weight-bold">Адрес</th>
+            <th class="py-4 px-4 font-weight-bold">Дата создания</th>
+            <th class="py-4 px-4 font-weight-bold">Последняя проверка</th>
+            <th class="py-4 px-4 font-weight-bold">Код ответа</th>
+          </tr>
         </thead>
         <tbody>
-        {% for url in urls %}
-        <tr>
-            <td>{{ url[0] }}</td>
-            <td><a href="{{ url_for('url_show', id=url[0]) }}">{{ url[1] }}</a></td>
-            <td>{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
-            <td>{{ url[3].strftime('%Y-%m-%d %H:%M:%S') if url[3] else '-' }}</td>  <!-- last_check -->
-            <td>{{ url[4] if url[4] is not none else '-' }}</td> 
-        </tr>
-        {% endfor %}
+          {% for url in urls %}
+          <tr class="align-middle">
+            <th class="font-weight-bold text-primary px-4 py-4">{{ url[0] }}</th>
+            <td class="px-4 py-4">
+              <a href="{{ url_for('url_show', id=url[0]) }}" class="text-dark font-weight-bold">
+                {{ url[1] }}
+              </a>
+            </td>
+            <td class="text-muted px-4 py-4 small">{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td class="text-muted px-4 py-4 small">
+              {{ url[3].strftime('%Y-%m-%d %H:%M:%S') if url[3] else '-' }}
+            </td>
+            <td class="px-4 py-4">
+              {% if url[4] %}
+                <span class="badge {{ 'badge-success' if url[4] == 200 else 'badge-warning' }}">
+                  {{ url[4] }}
+                </span>
+              {% else %}
+                <span class="badge badge-secondary">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center py-5 text-muted">
+              Нет сайтов для проверки
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  </div>
+</div>
 {% endblock %}

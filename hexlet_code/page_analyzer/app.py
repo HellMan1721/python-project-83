@@ -28,7 +28,7 @@ def urls():
         except ValueError:
             flash('Некорректный URL', 'danger')
             return render_template('index.html', url=url)
-        except Exception as e:
+        except Exception:
             flash('Ошибка базы данных', 'danger')
             return render_template('index.html', url=url)
     
