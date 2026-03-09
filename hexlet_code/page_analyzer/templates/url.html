@@ -1,22 +1,36 @@
-{% extends "layout.html" %}
+{% extends 'base.html' %}
+{% block title %}Сайты{% endblock %}
 {% block content %}
-<div class="container py-5">
-  <div class="glass-effect rounded-4 p-5 shadow-lg mx-auto" style="max-width: 800px;" data-test="url">
-    <div class="d-flex justify-content-between align-items-start mb-4">
-      <div>
-        <h1 class="h2 mb-1">{{ url[1] }}</h1>
-        <p class="text-muted mb-0">ID: {{ url[0] }}</p>
+    <!-- Информация о сайте -->
+  <div class="container py-4">
+    <div class="row">
+      <div class="col-lg-8" data-test="url">
+        <h1>Сайт: {{ url[1] }}</h1>
+            <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <th>{{ url[0] }}</th>
+        </tr>
+        <tr>
+          <th>Имя</th>
+          <th>{{ url[1] }}</th>
+        </tr>
+          <th>Дата создания</th>
+          <th>{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</th>
+        </tr>
+      </tbody>
+    </table>
       </div>
-      <a href="{{ url_for('urls_list') }}" class="btn btn-outline-secondary">Назад к списку</a>
     </div>
+  </div>
 
-    <!-- КНОПКА ПРОВЕРКИ -->
-    <form method="post" action="{{ url_for('url_check', id=url[0]) }}" class="mb-4">
-      <button type="submit" class="btn btn-primary">Запустить проверку</button>
+    <!-- КНОПКА ПРОВЕРКИ  -->
+    <form method="post" action="{{ url_for('url_check', id=url[0]) }}">
+      <input type="submit" class="btn btn-primary mb-4" value="Запустить проверку">
     </form>
 
-    <!-- ТАБЛИЦА ПРОВЕРОК -->
-    {% if checks %}
+    <!-- ТАБЛИЦА ПРОВЕРОК  -->
     <table class="table table-striped" data-test="checks">
       <thead>
         <tr>
@@ -31,19 +45,16 @@
       <tbody>
         {% for check in checks %}
         <tr>
-          <td>{{ check[0] }}</td>
-          <td>{{ check[2] or '-' }}</td>
-          <td>{{ check[3][:50] if check[3] else '-' }}</td>
-          <td>{{ check[4][:50] if check[4] else '-' }}</td>
-          <td>{{ check[5][:50] if check[5] else '-' }}</td>
-          <td>{{ check[6].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+          <td>{{ check[0] }}</td>  <!-- id -->
+          <td>{{ check[2] or '-' }}</td>  <!-- status_code -->
+          <td>{{ (check[3][:200] + '...') if check[3] else '-' }}</td>  <!-- h1 -->
+          <td>{{ (check[4][:200] + '...') if check[4] else '-' }}</td>  <!-- title -->
+          <td>{{ (check[5][:200] + '...') if check[5] else '-' }}</td>  <!-- description -->
+          <td>{{ check[6].strftime('%Y-%m-%d %H:%M:%S') }}</td>  <!-- created_at -->
         </tr>
+        {% else %}
+         <tr><td colspan="6" class="text-center text-muted">Проверок пока нет</td></tr>
         {% endfor %}
       </tbody>
     </table>
-    {% else %}
-    <p class="text-muted">Проверок пока нет</p>
-    {% endif %}
-  </div>
-</div>
 {% endblock %}

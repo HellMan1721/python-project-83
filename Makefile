@@ -2,7 +2,7 @@ install:
 	uv sync
 
 dev:
-	uv run flask --debug --app page_analyzer:app run
+	uv run flask --debug --app hexlet_code.page_analyzer:app run
 
 PORT ?= 8000
 start:

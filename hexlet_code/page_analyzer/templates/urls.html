@@ -1,27 +1,31 @@
-{% extends "layout.html" %}
+{% extends 'base.html' %}
+{% block title %}Сайты{% endblock %}
 {% block content %}
-<div class="container">
-  <h1 class="h2 mb-4">Список адресов</h1>
-  <table class="table table-striped" data-test="urls">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Адрес</th>
-        <th>Дата создания</th>
-        <th>Последняя проверка</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for url in urls %}
-    <tr>
-        <td>{{ url[0] }}</td>
-        <td><a href="{{ url_for('url_show', id=url[0]) }}">{{ url[1] }}</a></td>
-        <td>{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
-        <td>{{ url[7].strftime('%Y-%m-%d %H:%M:%S') if url[7] else '-' }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-
-  </table>
-</div>
+    <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Сайты</h1>
+        <a href="/" class="btn btn-primary">Добавить</a>
+    </div>
+    <table class="table table-striped" data-test="urls">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Адрес</th>
+            <th>Дата создания</th>
+            <th>Последняя проверка</th>
+            <th>Код ответа</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for url in urls %}
+        <tr>
+            <td>{{ url[0] }}</td>
+            <td><a href="{{ url_for('url_show', id=url[0]) }}">{{ url[1] }}</a></td>
+            <td>{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ url[3].strftime('%Y-%m-%d %H:%M:%S') if url[3] else '-' }}</td>  <!-- last_check -->
+            <td>{{ url[4] if url[4] is not none else '-' }}</td> 
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
