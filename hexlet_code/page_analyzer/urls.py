@@ -8,35 +8,36 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class URL:
     @staticmethod
     def get_connection():
-        return psycopg.connect(os.getenv('DATABASE_URL'))
+        return psycopg.connect(os.getenv("DATABASE_URL"))
 
     @staticmethod
     def normalize(url):
         """example.com → https://example.com"""
-        parsed = urlparse(url if url.startswith('http') else f'https://{url}')
+        parsed = urlparse(url if url.startswith("http") else f"https://{url}")
         return f"{parsed.scheme}://{parsed.netloc.lower()}"
 
     @staticmethod
     def save(url):
         """Сохранить URL, возвращает ID"""
         normalized = URL.normalize(url)
-        
+
         # Валидация
         if not validators.url(normalized) or len(normalized) > 255:
             raise ValueError("Некорректный URL")
-        
+
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
                 # UPSERT: INSERT или пропустить дубликат
                 cur.execute(
                     "INSERT INTO urls (name) VALUES (%s) ON CONFLICT (name) DO NOTHING RETURNING id",
-                    (normalized,)
+                    (normalized,),
                 )
                 result = cur.fetchone()
-                
+
                 if result:
                     return result[0]  # Новый ID
                 else:
@@ -82,8 +83,8 @@ class URL:
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT * FROM url_checks WHERE url_id = %s ORDER BY created_at DESC", 
-                    (url_id,)
+                    "SELECT * FROM url_checks WHERE url_id = %s ORDER BY created_at DESC",
+                    (url_id,),
                 )
                 return cur.fetchall()
 
@@ -93,33 +94,44 @@ class URL:
         url_data = URL.get(url_id)
         if not url_data:
             raise Exception("URL not found")
-        
+
         url_name = url_data[1]
-        
+
         try:
             response = requests.get(url_name, timeout=10)
             response.raise_for_status()
-            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            h1 = soup.find('h1')
+
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            h1 = soup.find("h1")
             h1_text = h1.get_text(strip=True) if h1 else None
-            
-            title = soup.find('title')
+
+            title = soup.find("title")
             title_text = title.get_text(strip=True) if title else None
-            
-            description = soup.find('meta', attrs={'name': 'description'})
-            description_text = description.get('content', '').strip() if description else None
-            
+
+            description = soup.find("meta", attrs={"name": "description"})
+            description_text = (
+                description.get("content", "").strip() if description else None
+            )
+
             with URL.get_connection() as conn:
                 with conn.cursor() as cur:
-                    cur.execute("""
+                    cur.execute(
+                        """
                         INSERT INTO url_checks (url_id, status_code, h1, title, description) 
                         VALUES (%s, %s, %s, %s, %s) RETURNING id
-                    """, (url_id, response.status_code, h1_text, title_text, description_text))
+                    """,
+                        (
+                            url_id,
+                            response.status_code,
+                            h1_text,
+                            title_text,
+                            description_text,
+                        ),
+                    )
                     check_id = cur.fetchone()[0]
                     conn.commit()
                     return check_id
-                    
+
         except (requests.RequestException, requests.exceptions.HTTPError):
             raise Exception("Request failed")
