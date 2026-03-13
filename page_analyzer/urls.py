@@ -43,13 +43,12 @@ class URL:
 
     @staticmethod
     def normalize(url):
-        """Hexlet нормализация: protocol + host + path."""
-        if url.startswith("http"):
-            parsed = urlparse(url.lower())
-        else:
-            parsed = urlparse(f"https://{url.lower()}")
+        """Hexlet: ССЫЛКИ С ОДНИМ ХОСТОМ = ОДИН URL!"""
+        if not url.startswith("http"):
+            url = f"https://{url}"
 
-        return f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+        parsed = urlparse(url.lower())
+        return f"{parsed.scheme}://{parsed.netloc}/"
 
     @staticmethod
     def save(url):
