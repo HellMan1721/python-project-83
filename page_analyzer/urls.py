@@ -43,26 +43,32 @@ class URL:
 
     @staticmethod
     def normalize(url):
-        """example.com → https://example.com"""
-        parsed = urlparse(url if url.startswith("http") else f"https://{url}")
-        return f"{parsed.scheme}://{parsed.netloc.lower()}"
+        """Hexlet нормализация: protocol + host + path."""
+        if url.startswith("http"):
+            parsed = urlparse(url.lower())
+        else:
+            parsed = urlparse(f"https://{url.lower()}")
+
+        return f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
 
     @staticmethod
     def save(url):
         normalized = URL.normalize(url)
-        
+
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
                 if cur.fetchone():
                     raise ValueError("Страница уже существует")
-        
+
         if not validators.url(url) or len(normalized) > 255:
             raise ValueError("Некорректный URL")
-        
+
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (normalized,))
+                cur.execute(
+                    "INSERT INTO urls (name) VALUES (%s) RETURNING id", (normalized,)
+                )
                 url_id = cur.fetchone()[0]
                 conn.commit()
                 return url_id
