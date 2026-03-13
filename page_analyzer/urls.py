@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-
 class URL:
     @staticmethod
     def init_db():
@@ -33,7 +32,7 @@ class URL:
                 );
             """)
             conn.commit()
-            
+
     @staticmethod
     def get_connection():
         return psycopg.connect(os.getenv("DATABASE_URL"))

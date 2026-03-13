@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 import os
 from dotenv import load_dotenv
-from urls import URL
+from .urls import URL
 
 load_dotenv()
 
