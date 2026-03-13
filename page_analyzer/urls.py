@@ -158,3 +158,5 @@ class URL:
 
         except (requests.RequestException, requests.exceptions.HTTPError):
             raise Exception("Request failed")
+        
+init_db()
