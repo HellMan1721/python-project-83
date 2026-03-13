@@ -45,28 +45,28 @@ class URL:
 
     @staticmethod
     def save(url):
-        """Сохранить URL, возвращает ID"""
+        """Сохранить URL, возвращает ID."""
         normalized = URL.normalize(url)
-
+        
         # Валидация
         if not validators.url(normalized) or len(normalized) > 255:
             raise ValueError("Некорректный URL")
 
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
-                # UPSERT: INSERT или пропустить дубликат
+                cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
+                existing = cur.fetchone()
+                
+                if existing:
+                    raise ValueError("Страница уже существует")
+                
                 cur.execute(
-                    "INSERT INTO urls (name) VALUES (%s) ON CONFLICT (name) DO NOTHING RETURNING id",
-                    (normalized,),
+                    "INSERT INTO urls (name) VALUES (%s) RETURNING id",
+                    (normalized,)
                 )
                 result = cur.fetchone()
-
-                if result:
-                    return result[0]  # Новый ID
-                else:
-                    # Уже существует
-                    cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
-                    return cur.fetchone()[0]
+                conn.commit()
+                return result[0]
 
     @staticmethod
     def all():
