@@ -12,26 +12,30 @@ load_dotenv()
 class URL:
     @staticmethod
     def init_db():
-        """Создание таблиц для URL."""
-        with URL.get_connection() as conn:
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS urls (
-                    id SERIAL PRIMARY KEY,
-                    name VARCHAR(255) UNIQUE NOT NULL,
-                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-                );
-                
-                CREATE TABLE IF NOT EXISTS url_checks (
-                    id SERIAL PRIMARY KEY,
-                    url_id INTEGER NOT NULL REFERENCES urls (id),
-                    status_code INTEGER,
-                    h1 VARCHAR(255),
-                    title VARCHAR(255),
-                    description TEXT,
-                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-                );
-            """)
-            conn.commit()
+        """Создание таблиц (игнорируем дубликаты)."""
+        try:
+            with URL.get_connection() as conn:
+                conn.execute("""
+                    CREATE TABLE IF NOT EXISTS urls (
+                        id SERIAL PRIMARY KEY,
+                        name VARCHAR(255) UNIQUE NOT NULL,
+                        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                    )
+                """)
+                conn.execute("""
+                    CREATE TABLE IF NOT EXISTS url_checks (
+                        id SERIAL PRIMARY KEY,
+                        url_id INTEGER NOT NULL REFERENCES urls (id),
+                        status_code INTEGER,
+                        h1 VARCHAR(255),
+                        title VARCHAR(255),
+                        description TEXT,
+                        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                    )
+                """)
+                conn.commit()
+        except Exception as e:
+            print(f"Таблицы уже существуют: {e}")
 
     @staticmethod
     def get_connection():
@@ -47,7 +51,7 @@ class URL:
     def save(url):
         """Сохранить URL, возвращает ID."""
         normalized = URL.normalize(url)
-        
+
         # Валидация
         if not validators.url(normalized) or len(normalized) > 255:
             raise ValueError("Некорректный URL")
@@ -56,13 +60,12 @@ class URL:
             with conn.cursor() as cur:
                 cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
                 existing = cur.fetchone()
-                
+
                 if existing:
                     raise ValueError("Страница уже существует")
-                
+
                 cur.execute(
-                    "INSERT INTO urls (name) VALUES (%s) RETURNING id",
-                    (normalized,)
+                    "INSERT INTO urls (name) VALUES (%s) RETURNING id", (normalized,)
                 )
                 result = cur.fetchone()
                 conn.commit()
@@ -158,5 +161,6 @@ class URL:
 
         except (requests.RequestException, requests.exceptions.HTTPError):
             raise Exception("Request failed")
-        
+
+
 URL.init_db()
