@@ -22,4 +22,7 @@ format:
 
 check:
 	uv run ruff check .
+
+push:
+	git add . & git commit -m 'thangs' & git push
 	

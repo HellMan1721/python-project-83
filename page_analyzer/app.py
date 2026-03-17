@@ -27,14 +27,14 @@ def urls():
             url_id = URL.save(url)
             flash("Страница успешно добавлена", "success")
             return redirect(url_for("url_show", id=url_id))
-        except ValueError:
-            flash("Некорректный URL", "danger")
-            return render_template("index.html", url=url)
+        except URL.DuplicateUrlError as e:
+            flash(str(e), "danger")
+        except URL.ValidationError as e:
+            flash(str(e), "danger")
         except Exception:
             flash("Ошибка базы данных", "danger")
             return render_template("index.html", url=url)
 
-    # GET: список всех URL
     urls = URL.all()
     return render_template("urls.html", urls=urls)
 

@@ -10,6 +10,15 @@ load_dotenv()
 
 
 class URL:
+
+    class DuplicateUrlError(Exception):
+        """URL уже существует."""
+        pass
+
+    class ValidationError(Exception):
+        """Некорректный URL."""
+        pass
+
     @staticmethod
     def init_db():
         """Создание таблиц (игнорируем дубликаты)."""
@@ -43,7 +52,6 @@ class URL:
 
     @staticmethod
     def normalize(url):
-        """Hexlet: ССЫЛКИ С ОДНИМ ХОСТОМ = ОДИН URL!"""
         if not url.startswith("http"):
             url = f"https://{url}"
 
@@ -58,10 +66,10 @@ class URL:
             with conn.cursor() as cur:
                 cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
                 if cur.fetchone():
-                    raise ValueError("Страница уже существует")
+                    raise DuplicateUrlError("Страница уже существует")
 
         if not validators.url(url) or len(normalized) > 255:
-            raise ValueError("Некорректный URL")
+            raise ValidationError("Некорректный URL")
 
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
