@@ -27,6 +27,7 @@ def urls():
             url_id = URL.save(url)
             flash("Страница успешно добавлена", "success")
             return redirect(url_for("url_show", id=url_id))
+
         except URL.DuplicateUrlError as e:
             flash(str(e), "danger")
         except URL.ValidationError as e:

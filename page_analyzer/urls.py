@@ -9,16 +9,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+class DuplicateUrlError(Exception):
+    """URL уже существует."""
+
+    pass
+
+
+class ValidationError(Exception):
+    """Некорректный URL."""
+
+    pass
+
+
 class URL:
-
-    class DuplicateUrlError(Exception):
-        """URL уже существует."""
-        pass
-
-    class ValidationError(Exception):
-        """Некорректный URL."""
-        pass
-
     @staticmethod
     def init_db():
         """Создание таблиц (игнорируем дубликаты)."""
