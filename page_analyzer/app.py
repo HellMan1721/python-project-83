@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for, request, abort
+from flask import Flask, render_template, flash, redirect, url_for, request
 import os
 from dotenv import load_dotenv
 from .urls import URL, DuplicateUrlError, ValidationError
@@ -38,10 +38,10 @@ def urls():
             return redirect(url_for("url_show", id=url_id))
         except ValidationError:
             flash("Некорректный URL", "danger")
-            abort(422)
+            return render_template("index.html", url=url), 422
         except Exception:
             flash("Ошибка базы данных", "danger")
-            return render_template("index.html", url=url)
+            return render_template("index.html", url=url), 500
 
     urls = URL.all()
     return render_template("urls.html", urls=urls)
