@@ -67,7 +67,9 @@ class URL:
 
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
+                cur.execute(
+                    "SELECT id FROM urls WHERE name = %s", (normalized,)
+                    )
                 existing = cur.fetchone()
                 if existing:
                     raise DuplicateUrlError(existing[0])
@@ -76,7 +78,8 @@ class URL:
                     raise ValidationError("Некорректный URL")
 
                 cur.execute(
-                    "INSERT INTO urls (name) VALUES (%s) RETURNING id", (normalized,)
+                    "INSERT INTO urls (name) VALUES (%s) RETURNING id", 
+                    (normalized,)
                 )
                 url_id = cur.fetchone()[0]
                 conn.commit()
@@ -99,7 +102,9 @@ class URL:
                         SELECT url_id, 
                             created_at, 
                             status_code,
-                            ROW_NUMBER() OVER (PARTITION BY url_id ORDER BY created_at DESC) as rn
+                            ROW_NUMBER() OVER (
+                            PARTITION BY url_id ORDER BY created_at DESC
+                            ) as rn
                         FROM url_checks
                     ) c ON u.id = c.url_id AND c.rn = 1
                     ORDER BY u.created_at DESC
@@ -120,7 +125,8 @@ class URL:
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT * FROM url_checks WHERE url_id = %s ORDER BY created_at DESC",
+                    "SELECT * FROM url_checks " \
+                    "WHERE url_id = %s ORDER BY created_at DESC",
                     (url_id,),
                 )
                 return cur.fetchall()
@@ -155,7 +161,9 @@ class URL:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        INSERT INTO url_checks (url_id, status_code, h1, title, description) 
+                        INSERT INTO url_checks (
+                        url_id, status_code, h1, title, description
+                        ) 
                         VALUES (%s, %s, %s, %s, %s) RETURNING id
                     """,
                         (
