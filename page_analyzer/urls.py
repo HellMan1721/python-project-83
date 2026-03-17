@@ -67,9 +67,7 @@ class URL:
 
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    "SELECT id FROM urls WHERE name = %s", (normalized,)
-                    )
+                cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
                 existing = cur.fetchone()
                 if existing:
                     raise DuplicateUrlError(existing[0])
@@ -78,8 +76,7 @@ class URL:
                     raise ValidationError("Некорректный URL")
 
                 cur.execute(
-                    "INSERT INTO urls (name) VALUES (%s) RETURNING id", 
-                    (normalized,)
+                    "INSERT INTO urls (name) VALUES (%s) RETURNING id", (normalized,)
                 )
                 url_id = cur.fetchone()[0]
                 conn.commit()
@@ -125,7 +122,7 @@ class URL:
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT * FROM url_checks " \
+                    "SELECT * FROM url_checks "
                     "WHERE url_id = %s ORDER BY created_at DESC",
                     (url_id,),
                 )
