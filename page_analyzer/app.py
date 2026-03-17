@@ -29,7 +29,9 @@ def urls():
             return redirect(url_for("url_show", id=url_id))
 
         except DuplicateUrlError as e:
-            flash(str(e), "danger")
+            url_id = e.args[0]  # ID существующего URL
+            flash("Страница уже существует", "danger")
+            return redirect(url_for("url_show", id=url_id))
         except ValidationError as e:
             flash(str(e), "danger")
         except Exception:

@@ -68,14 +68,13 @@ class URL:
         with URL.get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
-                if cur.fetchone():
-                    raise DuplicateUrlError("Страница уже существует")
+                existing = cur.fetchone()
+                if existing:
+                    raise DuplicateUrlError(existing[0])
 
-        if not validators.url(url) or len(normalized) > 255:
-            raise ValidationError("Некорректный URL")
+                if not validators.url(url) or len(normalized) > 255:
+                    raise ValidationError("Некорректный URL")
 
-        with URL.get_connection() as conn:
-            with conn.cursor() as cur:
                 cur.execute(
                     "INSERT INTO urls (name) VALUES (%s) RETURNING id", (normalized,)
                 )
