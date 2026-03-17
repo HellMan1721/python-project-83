@@ -25,7 +25,11 @@ def urls():
 
         try:
             url_id = URL.save(url)
-            flash("Страница успешно добавлена", "success")
+            try:
+                URL.create_check(url_id)
+                flash("Страница успешно добавлена и проверена", "success")
+            except Exception:
+                flash("Страница успешно добавлена", "success")
             return redirect(url_for("url_show", id=url_id))
 
         except DuplicateUrlError as e:

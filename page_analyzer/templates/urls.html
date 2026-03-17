@@ -39,8 +39,8 @@
             <th class="py-4 px-4 font-weight-bold">ID</th>
             <th class="py-4 px-4 font-weight-bold">Адрес</th>
             <th class="py-4 px-4 font-weight-bold">Дата создания</th>
-            <th class="py-4 px-4 font-weight-bold">Последняя проверка</th>
             <th class="py-4 px-4 font-weight-bold">Код ответа</th>
+            <th class="py-4 px-4 font-weight-bold">Последняя проверка</th>
           </tr>
         </thead>
         <tbody>
@@ -52,9 +52,8 @@
                 {{ url[1] }}
               </a>
             </td>
-            <td class="text-muted px-4 py-4 small">{{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td class="text-muted px-4 py-4 small">
-              {{ url[3].strftime('%Y-%m-%d %H:%M:%S') if url[3] else '-' }}
+              {{ url[2].strftime('%Y-%m-%d %H:%M:%S') }}
             </td>
             <td class="px-4 py-4">
               {% if url[4] %}
@@ -64,6 +63,9 @@
               {% else %}
                 <span class="badge badge-secondary">—</span>
               {% endif %}
+            </td>            
+            <td class="text-muted px-4 py-4 small">
+              {{ url[3].strftime('%Y-%m-%d %H:%M:%S') if url[3] else '-' }}
             </td>
           </tr>
           {% else %}

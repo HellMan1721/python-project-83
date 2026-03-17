@@ -92,8 +92,8 @@ class URL:
                         u.id, 
                         u.name, 
                         u.created_at,
-                        c.created_at as last_check,
                         c.status_code as last_status
+                        c.created_at as last_check,
                     FROM urls u 
                     LEFT JOIN (
                         SELECT url_id, 
