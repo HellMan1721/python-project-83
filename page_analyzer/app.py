@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 import os
 from dotenv import load_dotenv
-from .urls import URL
+from .urls import URL, DuplicateUrlError, ValidationError
 
 load_dotenv()
 
@@ -28,9 +28,9 @@ def urls():
             flash("Страница успешно добавлена", "success")
             return redirect(url_for("url_show", id=url_id))
 
-        except URL.DuplicateUrlError as e:
+        except DuplicateUrlError as e:
             flash(str(e), "danger")
-        except URL.ValidationError as e:
+        except ValidationError as e:
             flash(str(e), "danger")
         except Exception:
             flash("Ошибка базы данных", "danger")
