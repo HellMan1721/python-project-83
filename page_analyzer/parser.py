@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from .urls import URL
-import database
+from .database import get_connection
 
 
 def create_check(url_id):
@@ -29,7 +29,7 @@ def create_check(url_id):
             description.get("content", "").strip() if description else None
         )
 
-        with database.get_connection() as conn:
+        with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """

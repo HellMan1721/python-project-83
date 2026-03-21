@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import database
+from .database import get_connection, init_db
 
 load_dotenv()
 
@@ -8,7 +8,7 @@ class URL:
     @staticmethod
     def all():
         """Все URL + дата И КОД последней проверки"""
-        with database.get_connection() as conn:
+        with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     SELECT 
@@ -34,7 +34,7 @@ class URL:
     @staticmethod
     def get(id):
         """Один URL по ID"""
-        with database.get_connection() as conn:
+        with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT * FROM urls WHERE id = %s", (id,))
                 return cur.fetchone()
@@ -42,7 +42,7 @@ class URL:
     @staticmethod
     def get_checks(url_id):
         """Все проверки для сайта"""
-        with database.get_connection() as conn:
+        with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     "SELECT * FROM url_checks "
@@ -52,4 +52,4 @@ class URL:
                 return cur.fetchall()
 
 
-database.init_db()
+init_db()
