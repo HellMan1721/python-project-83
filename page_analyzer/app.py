@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from .database import DuplicateUrlError, ValidationError
 from .urls import URL
-import parser
+from .parser import create_check
 
 load_dotenv()
 
@@ -28,7 +28,7 @@ def urls():
         try:
             url_id = URL.save(url)
             try:
-                parser.create_check(url_id)
+                create_check(url_id)
                 flash("Страница успешно добавлена и проверена", "success")
             except Exception:
                 flash("Страница успешно добавлена", "success")
