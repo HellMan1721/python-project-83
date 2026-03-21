@@ -1,7 +1,9 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 import os
 from dotenv import load_dotenv
-from .urls import URL, DuplicateUrlError, ValidationError
+from .database import DuplicateUrlError, ValidationError
+from .urls import URL
+import parser
 
 load_dotenv()
 
@@ -26,7 +28,7 @@ def urls():
         try:
             url_id = URL.save(url)
             try:
-                URL.create_check(url_id)
+                parser.create_check(url_id)
                 flash("Страница успешно добавлена и проверена", "success")
             except Exception:
                 flash("Страница успешно добавлена", "success")
@@ -60,7 +62,7 @@ def url_show(id):
 @app.route("/urls/<int:id>/checks", methods=["POST"])
 def url_check(id):
     try:
-        URL.create_check(id)
+        parser.create_check(id)
         flash("Страница успешно проверена", "success")
     except Exception:
         flash("Произошла ошибка при проверке", "danger")
