@@ -1,8 +1,7 @@
-# page_analyzer/database.py
 import psycopg
 import os
 import validators
-from url_normalizer import normalize
+from .url_normalizer import normalize
 
 
 class DuplicateUrlError(Exception):
