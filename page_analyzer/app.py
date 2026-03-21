@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 import os
 from dotenv import load_dotenv
-from .database import DuplicateUrlError, ValidationError
+from .database import DuplicateUrlError, ValidationError, save
 from .urls import URL
 from .parser import create_check
 
@@ -26,12 +26,13 @@ def urls():
             return render_template("index.html", url=url)
 
         try:
-            url_id = URL.save(url)
+            url_id = save(url)
             try:
                 create_check(url_id)
-                flash("Страница успешно добавлена и проверена", "success")
             except Exception:
-                flash("Страница успешно добавлена", "success")
+                pass
+
+            flash("Страница успешно добавлена", "success")
             return redirect(url_for("url_show", id=url_id))
 
         except DuplicateUrlError as e:
