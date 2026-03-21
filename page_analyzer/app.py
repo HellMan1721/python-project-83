@@ -62,7 +62,7 @@ def url_show(id):
 @app.route("/urls/<int:id>/checks", methods=["POST"])
 def url_check(id):
     try:
-        parser.create_check(id)
+        create_check(id)
         flash("Страница успешно проверена", "success")
     except Exception:
         flash("Произошла ошибка при проверке", "danger")
