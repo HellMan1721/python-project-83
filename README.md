@@ -7,8 +7,8 @@
 ### Render deploy:
 **[Live Demo](https://python-project-83-vni9.onrender.com)**
 
-### Sonar Quality Badge:
-[![Sonar Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=HellMan1721_python-project-83&metric=alert_status)](https://sonarcloud.io/dashboard?id=HellMan1721_python-project-83)
+### Sonar Scanned Badge:
+[![SonarCloud Scanned](https://sonarcloud.io/api/project_badges/measure?project=HellMan1721_python-project-83&metric=alert_status)]()
 
 
 Анализатор веб-страниц на Flask + PostgreSQL. Добавление URL, проверка статус-кодов, парсинг title/h1/description.
