@@ -8,7 +8,8 @@
 **[Live Demo](https://python-project-83-vni9.onrender.com)**
 
 ### Sonar Scanned Badge:
-[![SonarCloud Scanned](https://sonarcloud.io/api/project_badges/measure?project=HellMan1721_python-project-83&metric=alert_status)]()
+[![Sonar Scanned](https://sonarcloud.io/api/project_badges/measure?project=HellMan1721_python-project-83&metric=ncloc)]()
+
 
 
 Анализатор веб-страниц на Flask + PostgreSQL. Добавление URL, проверка статус-кодов, парсинг title/h1/description.
